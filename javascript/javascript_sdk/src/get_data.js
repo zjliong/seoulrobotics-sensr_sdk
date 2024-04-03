@@ -38,7 +38,7 @@ const get_point_data = (client) => {
       }
   });
 }
-  
+
 const get_object_data = (client) => {
   client.listenToObjectUpdate(response => {
     const objects = response.getObjectsList();
@@ -99,7 +99,7 @@ const get_health_data = (client) => {
         let sensor_info = v.getSensorsMap();
         if (sensor_info.arr_ !== undefined){
           sensor_info.forEach((v1, k1) => {
-            console.log('   Sensors(%s) health: %d', k1, v1);
+            console.log('  Sensors(%s) health: %d', k1, v1);
           });
         } else {
           console.log('No Sensors are connected');
@@ -109,12 +109,18 @@ const get_health_data = (client) => {
     }
   });
 }
-  
+
+function convertTimestampToMillis(timestamp) {
+  const seconds = timestamp.getSeconds();
+  const nanos = timestamp.getNanos();
+  return (seconds * 1000) + Math.floor((nanos / 1000000));
+}
+
 const get_time_data = (client) => {
-    client.listenToObjectUpdate(null, null, response => { 
-      let cur_time = new Date();
-      console.log('Diff: %f ms', cur_time.getTime()- (response.array[0]*1000));
-    });
+  client.listenToObjectUpdate(null, null, response => { 
+    let cur_time = new Date();
+    console.log('Diff: %f ms', cur_time.getTime()- convertTimestampToMillis(response));
+  });
 }
 
 module.exports = {
